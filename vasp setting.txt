@@ -1,0 +1,90 @@
+前期准备（windows上操作）
+#首先下载安装油猴脚本和idm，方便白嫖百度网盘（使用软件都在百度网盘）
+#百度网盘链接：链接: https://pan.baidu.com/s/1gWGN5X7HBYTX_BGIQNv0CQ?pwd=rr84 提取码: rr84 
+#ubuntu18.06.4链接: https://pan.baidu.com/s/1-eK6_lycJn_JdAYqO71RsQ?pwd=v3jf 提取码: v3jf 
+#插件链接：
+#https://greasyfork.org/zh-CN/scripts/418182-%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%98%E7%AE%80%E6%98%93%E4%B8%8B%E8%BD%BD%E5%8A%A9%E6%89%8B-%E7%9B%B4%E9%93%BE%E4%B8%8B%E8%BD%BD%E5%A4%8D%E6%B4%BB%E7%89%88
+#下载windows虚拟机
+#https://www.vmware.com/in/products/workstation-pro/workstation-pro-evaluation.html（或者百度网盘下载）
+#安装、激活虚拟机  激活代码YF390-0HF8P-M81RQ-2DXQE-M2UT6（虚拟机需要60G）
+#下载linux系统 ubuntu 20.04.4
+#系统在百度网盘
+#安装ubuntu 20.04.4
+配置环境
+#只需要换一次源，不同版本的ubunt源不同
+#换源ubunt20.04.4
+sudo gedit /etc/apt/sources.list
+#输入用户密码
+#复制下面几行代吗
+
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt  install openssh-server vim
+sudo apt  install gcc cmake pkg-config build-essential
+
+（#换源ubunt18.04 
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt  install openssh-server vim
+sudo apt  install gcc cmake pkg-config build-essential
+）
+
+
+#系统在百度网盘
+#在l_BaseKit_p_2022.2.0.262_offline.sh和l_HPCKit_p_2022.2.0.191_offline.sh中运行下面代码
+bash l_BaseKit_p_2022.2.0.262_offline.sh
+bash l_HPCKit_p_2022.2.0.191_offline.sh
+vi ~/.bashrc
+#按a/A即可进入编辑模式
+source /home/xiaoxufeng/intel/oneapi/setvars.sh
+PATH=/home/xiaoxufeng（用户名）/Documents/vasp.6.1.2/vasp.6.1.2_patched/bin/ifort:$PATH
+PATH=/home/xiaoxufeng（用户名）/Documents/vasp.6.1.2/vasp.6.1.2_patched/bin/mpi:$PATH
+PATH=/home/xiaoxufeng（用户名）/Documents/vasp.6.1.2/vasp.6.1.2_patched/bin/mkl:$PATH
+#配置完后按esc ：wq保存退出
+source ~/.bashrc
+#配置好环境后每打开一个terminal都会出现环境
+安装vasp.6.1.2
+#提取vasp.6.1.2.tar.gz
+#打开terminal输入
+tar -xvf vasp.6.1.2.tar.gz 
+#进入vaspvasp.6.1.2_patched目录：
+cp arch/makefile.include.linux_intel makefile.include
+#更改makefile.include
+#ubuntu20.04.4可以直接打开
+FFLAGS     = -assume byterecl -w -xHOST
+OFLAG      = -O2
+#应该改成
+FFLAGS     = -assume byterecl -w
+OFLAG      = -O2-xhost
+然后
+make gam
+make std
+make ncl
+#在vasp.6.1.2_patched目录下
+打开terminal
+mv bin/vasp_std bin/vasp
+vi ~/.bashrc
+PATH=$PATH：/home/xiaoxufeng（用户名）/Documents/vasp.6.1.2/vasp.6.1.2_patched/bin
+source ~/.bashrc
+mpirun -np 4 vasp
+
